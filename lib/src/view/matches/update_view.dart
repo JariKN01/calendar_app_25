@@ -1,26 +1,26 @@
-import 'package:agenda_app/src/controller/events_controller.dart';
+import 'package:agenda_app/src/controller/matches_controller.dart';
 import 'package:agenda_app/src/controller/teams_controller.dart';
-import 'package:agenda_app/src/model/event.dart';
+import 'package:agenda_app/src/model/match.dart';
 import 'package:agenda_app/src/model/team.dart';
 import 'package:flutter/material.dart';
 
-class EventUpdate extends StatefulWidget{
-  final Event event;
-  final EventController controller;
+class MatchUpdate extends StatefulWidget {
+  final Match match;
+  final MatchController controller;
 
-  const EventUpdate({
-    super.key, 
-    required this.event,
+  const MatchUpdate({
+    super.key,
+    required this.match,
     required this.controller,
   });
 
   @override
-  State<EventUpdate> createState() => _EventUpdateState();
+  State<MatchUpdate> createState() => _MatchUpdateState();
 }
 
-class _EventUpdateState extends State<EventUpdate> {
+class _MatchUpdateState extends State<MatchUpdate> {
   final _formKey = GlobalKey<FormState>();
-  late TextEditingController _nameController;
+  late TextEditingController _titleController;
   late TextEditingController _descriptionController;
 
   DateTime? _startDate;
@@ -38,36 +38,36 @@ class _EventUpdateState extends State<EventUpdate> {
     super.initState();
     _teamController = TeamController();
 
-    // Initialize with existing event data
-    _nameController = TextEditingController(text: widget.event.title);
-    _descriptionController = TextEditingController(text: widget.event.description);
+    // Initialize with existing match data
+    _titleController = TextEditingController(text: widget.match.title);
+    _descriptionController = TextEditingController(text: widget.match.description);
 
     _startDate = DateTime(
-      widget.event.datetimeStart.year,
-      widget.event.datetimeStart.month,
-      widget.event.datetimeStart.day,
+      widget.match.datetimeStart.year,
+      widget.match.datetimeStart.month,
+      widget.match.datetimeStart.day,
     );
     _startTime = TimeOfDay(
-      hour: widget.event.datetimeStart.hour,
-      minute: widget.event.datetimeStart.minute,
+      hour: widget.match.datetimeStart.hour,
+      minute: widget.match.datetimeStart.minute,
     );
 
     _endDate = DateTime(
-      widget.event.datetimeEnd.year,
-      widget.event.datetimeEnd.month,
-      widget.event.datetimeEnd.day,
+      widget.match.datetimeEnd.year,
+      widget.match.datetimeEnd.month,
+      widget.match.datetimeEnd.day,
     );
     _endTime = TimeOfDay(
-      hour: widget.event.datetimeEnd.hour,
-      minute: widget.event.datetimeEnd.minute,
+      hour: widget.match.datetimeEnd.hour,
+      minute: widget.match.datetimeEnd.minute,
     );
 
-    _selectedTeam = widget.event.team;
+    _selectedTeam = widget.match.team;
   }
 
   @override
   void dispose() {
-    _nameController.dispose();
+    _titleController.dispose();
     _descriptionController.dispose();
     super.dispose();
   }
@@ -124,12 +124,12 @@ class _EventUpdateState extends State<EventUpdate> {
     }
   }
 
-  Future<void> _updateEvent() async {
+  Future<void> _updateMatch() async {
     if (!_formKey.currentState!.validate()) return;
 
     if (_startDate == null || _startTime == null || _endDate == null || _endTime == null) {
       setState(() {
-        _errorMessage = 'Selecteer start- en eindatum/tijd';
+        _errorMessage = 'Selecteer start- en einddatum/tijd';
       });
       return;
     }
@@ -171,11 +171,11 @@ class _EventUpdateState extends State<EventUpdate> {
         return;
       }
 
-      // TODO: Implement updateEvent method in EventController
+      // TODO: Implement updateMatch method in MatchController
       // For now, just show success message
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Evenement "${_nameController.text}" bijgewerkt!'),
+          content: Text('Wedstrijd "${_titleController.text}" bijgewerkt!'),
           backgroundColor: Colors.green,
         ),
       );
@@ -184,7 +184,7 @@ class _EventUpdateState extends State<EventUpdate> {
       Navigator.pop(context); // Close both dialogs
     } catch (e) {
       setState(() {
-        _errorMessage = 'Fout bij bijwerken evenement: $e';
+        _errorMessage = 'Fout bij bijwerken wedstrijd: $e';
         _isLoading = false;
       });
     }
@@ -192,6 +192,8 @@ class _EventUpdateState extends State<EventUpdate> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Dialog(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
@@ -217,7 +219,7 @@ class _EventUpdateState extends State<EventUpdate> {
                     ),
                     Expanded(
                       child: Text(
-                        'Evenement Bewerken',
+                        'Wedstrijd Bewerken',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 20,
@@ -225,7 +227,7 @@ class _EventUpdateState extends State<EventUpdate> {
                         ),
                       ),
                     ),
-                    SizedBox(width: 48),
+                    Icon(Icons.sports_soccer, size: 28, color: Colors.green),
                   ],
                 ),
                 SizedBox(height: 20),
@@ -235,23 +237,23 @@ class _EventUpdateState extends State<EventUpdate> {
                   width: double.maxFinite,
                   padding: EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.primaryContainer,
+                    color: Colors.green.shade50,
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Name field
+                      // Title field
                       TextFormField(
-                        controller: _nameController,
+                        controller: _titleController,
                         decoration: InputDecoration(
-                          labelText: 'Evenement Naam',
-                          hintText: 'Voer de naam van het evenement in',
+                          labelText: 'Wedstrijd Naam',
+                          hintText: 'Voer de naam van de wedstrijd in',
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8),
                           ),
                           filled: true,
-                          fillColor: Theme.of(context).colorScheme.surface,
+                          fillColor: Colors.white,
                         ),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -267,13 +269,13 @@ class _EventUpdateState extends State<EventUpdate> {
                         controller: _descriptionController,
                         maxLines: 3,
                         decoration: InputDecoration(
-                          labelText: 'Evenement Beschrijving',
+                          labelText: 'Wedstrijd Beschrijving',
                           hintText: 'Voer een beschrijving in',
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8),
                           ),
                           filled: true,
-                          fillColor: Theme.of(context).colorScheme.surface,
+                          fillColor: Colors.white,
                         ),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -288,13 +290,13 @@ class _EventUpdateState extends State<EventUpdate> {
                       Container(
                         padding: EdgeInsets.all(16),
                         decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.surface,
+                          color: Colors.white,
                           borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: Theme.of(context).colorScheme.outline),
+                          border: Border.all(color: Colors.grey.shade300),
                         ),
                         child: Row(
                           children: [
-                            Icon(Icons.group, color: Theme.of(context).colorScheme.primary),
+                            Icon(Icons.sports_soccer, color: Colors.green),
                             SizedBox(width: 12),
                             Text(
                               'Team: ${_selectedTeam?.name ?? 'Onbekend'}',
@@ -399,8 +401,9 @@ class _EventUpdateState extends State<EventUpdate> {
                       child: Text('Annuleren'),
                     ),
                     ElevatedButton(
-                      onPressed: _isLoading ? null : _updateEvent,
+                      onPressed: _isLoading ? null : _updateMatch,
                       style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30),
                         ),
@@ -410,9 +413,9 @@ class _EventUpdateState extends State<EventUpdate> {
                         ? SizedBox(
                             width: 16,
                             height: 16,
-                            child: CircularProgressIndicator(strokeWidth: 2),
+                            child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
                           )
-                        : Text('Bijwerken'),
+                        : Text('Bijwerken', style: TextStyle(color: Colors.white)),
                     ),
                   ],
                 ),

@@ -32,122 +32,224 @@ class _TeamCreateViewState extends State<TeamCreateView> {
 
   @override
   Widget build(BuildContext context) {
-    return SimpleDialog(
-      title: Row(
-        children: [
-          Expanded(
-            child: Row(
+    return Dialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+      ),
+      elevation: 8,
+      insetPadding: EdgeInsets.all(20),
+      child: Container(
+        padding: EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // Header with close button and title
+            Row(
               children: [
-                // Close button, to close the dialog
-                InkWell(
-                  onTap: () {
+                IconButton(
+                  onPressed: () {
                     Navigator.pop(context);
                   },
-                  child: Icon(Icons.close, size: 35),
+                  icon: Icon(Icons.close, size: 28),
+                  tooltip: 'Sluiten',
                 ),
-                Expanded(child: SizedBox()),
+                Expanded(
+                  child: Text(
+                    'Creëer team',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                SizedBox(width: 48), // Balance the close button
               ],
             ),
-          ),
-          Text('Creëer team'),
-          Expanded(child: SizedBox()),
-        ],
-      ),
-      contentPadding: EdgeInsets.all(20),
-      children: [
-        Form(
-          child: Column(
-            children: [
-              editableIcon(
-                context,
-                iconValue,
-                // Sets the icon to the new value
-                (String newIcon) {
-                  setState(() {
-                    iconValue = newIcon;
-                  });
-                }
-              ),
-              // Spacer
-              SizedBox(height: 10),
-              // Name input
-              formInput(
-                context,
-                _nameController,
-                'Naam',
-                validator: (String? value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Vul de team naam in';
-                  }
-                  return null;
-                },
-              ),
-              // Spacer
-              SizedBox(height: 10),
-              // Description input
-              formInput(context, _descriptionController, 'Beschrijving'),
-              // Spacer
-              SizedBox(height: 10),
-              ElevatedButton(
-                onPressed: () async {
-                  final Team? newTeam = await _controller.createTeam(
-                    _nameController.text,
-                    _descriptionController.text,
-                    iconValue
-                  );
+            SizedBox(height: 20),
 
-                  if (context.mounted) {
-                    if (newTeam != null) {
-                      (context as Element).markNeedsBuild();
-                      showDialog(
-                        context: context,
-                        builder: (context) =>
-                        AlertDialog(
-                          title: Text('Succes'),
-                          content: Text(
-                            'Nieuw team ${newTeam.name} is toegevoegd!',
-                          ),
-                          actions: [
-                            TextButton(
-                              // Close the dialog and go back to the team list
-                              onPressed: () {
+            // Form content
+            Form(
+              child: Column(
+                children: [
+                  // Icon selector
+                  editableIcon(
+                      context,
+                      iconValue,
+                      // Sets the icon to the new value
+                          (String newIcon) {
+                        setState(() {
+                          iconValue = newIcon;
+                        });
+                      }
+                  ),
+                  SizedBox(height: 20),
 
-                                Navigator.of(context).popUntil(
-                                        (route) => route.isFirst
-                                );
-                              },
-                              child: Text('OK'),
-                            ),
-                          ],
-                        ),
-                      );
-                    } else {
-                      // Error dialog if the team could not be created
-                      showDialog(
-                        context: context,
-                        builder: (context) =>
-                        AlertDialog(
-                          title: Text('Fout'),
-                          content: Text(
-                            'Het nieuwe team is niet toegevoegd, probeer het opnieuw!',
+                  // Name input
+                  formInput(
+                    context,
+                    _nameController,
+                    'Naam',
+                    validator: (String? value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Vul de team naam in';
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(height: 16),
+
+                  // Description input
+                  formInput(context, _descriptionController, 'Beschrijving'),
+                  SizedBox(height: 20),
+
+                  // Action buttons
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      OutlinedButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        style: OutlinedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
                           ),
-                          actions: [
-                            TextButton(
-                              onPressed: () => Navigator.of(context).pop(),
-                              child: Text('OK'),
-                            ),
-                          ],
+                          padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                         ),
-                      );
-                    }
-                  }
-                },
-                child: Text('Creëer'),
+                        child: Text('Annuleren'),
+                      ),
+                      ElevatedButton(
+                        onPressed: () async {
+                          final Team? newTeam = await _controller.createTeam(
+                              _nameController.text,
+                              _descriptionController.text,
+                              iconValue
+                          );
+
+                          if (context.mounted) {
+                            if (newTeam != null) {
+                              (context as Element).markNeedsBuild();
+                              showDialog(
+                                context: context,
+                                builder: (context) => Dialog(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                  elevation: 8,
+                                  child: Container(
+                                    padding: EdgeInsets.all(24),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Icon(
+                                          Icons.check_circle,
+                                          color: Theme.of(context).colorScheme.primary,
+                                          size: 48,
+                                        ),
+                                        SizedBox(height: 16),
+                                        Text(
+                                          'Succes',
+                                          style: TextStyle(
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        SizedBox(height: 12),
+                                        Text(
+                                          'Nieuw team ${newTeam.name} is toegevoegd!',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(fontSize: 16),
+                                        ),
+                                        SizedBox(height: 20),
+                                        ElevatedButton(
+                                          onPressed: () {
+                                            Navigator.of(context).popUntil(
+                                                    (route) => route.isFirst
+                                            );
+                                          },
+                                          style: ElevatedButton.styleFrom(
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(30),
+                                            ),
+                                            padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                                          ),
+                                          child: Text('OK'),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              );
+                            } else {
+                              // Error dialog if the team could not be created
+                              showDialog(
+                                context: context,
+                                builder: (context) => Dialog(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                  elevation: 8,
+                                  child: Container(
+                                    padding: EdgeInsets.all(24),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Icon(
+                                          Icons.error,
+                                          color: Theme.of(context).colorScheme.error,
+                                          size: 48,
+                                        ),
+                                        SizedBox(height: 16),
+                                        Text(
+                                          'Fout',
+                                          style: TextStyle(
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        SizedBox(height: 12),
+                                        Text(
+                                          'Het nieuwe team is niet toegevoegd, probeer het opnieuw!',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(fontSize: 16),
+                                        ),
+                                        SizedBox(height: 20),
+                                        ElevatedButton(
+                                          onPressed: () => Navigator.of(context).pop(),
+                                          style: ElevatedButton.styleFrom(
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(30),
+                                            ),
+                                            padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                                          ),
+                                          child: Text('OK'),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }
+                          }
+                        },
+                        style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                        ),
+                        child: Text('Creëer'),
+                      ),
+                    ],
+                  ),
+                ],
               ),
-            ],
-          )
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 }

@@ -31,7 +31,30 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Color(0xffD6FFFF)),
+        // Optie 1: Groen kleurenschema
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.purple),
+        // Optie 2: Grijs/neutrale kleuren
+        // colorScheme: ColorScheme.fromSeed(seedColor: Colors.grey),
+        // Optie 3: Oranje kleurenschema
+        // colorScheme: ColorScheme.fromSeed(seedColor: Colors.orange),
+        // Optie 4: Paars kleurenschema
+        // colorScheme: ColorScheme.fromSeed(seedColor: Colors.purple),
+        // Optie 5: Volledig aangepast kleurenschema zonder blauw
+        // colorScheme: const ColorScheme.light(
+        //   primary: Color(0xFF2E7D32), // Donkergroen
+        //   primaryContainer: Color(0xFFA5D6A7), // Lichtgroen
+        //   secondary: Color(0xFF558B2F), // Groen accent
+        //   secondaryContainer: Color(0xFFC8E6C9),
+        //   surface: Color(0xFFFAFAFA), // Lichtgrijs
+        //   surfaceVariant: Color(0xFFF5F5F5),
+        //   background: Color(0xFFFFFFFF), // Wit
+        //   error: Color(0xFFD32F2F), // Rood voor errors
+        //   onPrimary: Color(0xFFFFFFFF), // Wit tekst op primair
+        //   onSecondary: Color(0xFFFFFFFF),
+        //   onSurface: Color(0xFF212121), // Donkergrijze tekst
+        //   onBackground: Color(0xFF212121),
+        //   onError: Color(0xFFFFFFFF),
+        // ),
         useMaterial3: true,
       ),
       // Routes for the app

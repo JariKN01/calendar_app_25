@@ -51,7 +51,9 @@ class Event {
               description: description,
               datetimeStart: DateTime.parse(datetimeStart),
               datetimeEnd: DateTime.parse(datetimeEnd),
-              location: Map<String, double>.from(json['location']), // Apparently I can't do it in the normal way🤷‍♂️
+              location: json['location'] != null
+                ? Map<String, double>.from(json['location'])
+                : <String, double>{}, // Default empty map if location is null
               teamId: teamId,
               createdBy: createdBy,
               createdAt: DateTime.parse(createdAt),

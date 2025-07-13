@@ -42,7 +42,7 @@ dependencies:
   material_design_icons_flutter: ^7.0.7296
   multi_dropdown: ^3.0.1
   qr_flutter: ^4.1.0
-  simple_barcode_scanner: ^0.2.1
+#  simple_barcode_scanner: ^0.2.1
   flutter_map: ^7.0.2
   latlong2: ^0.9.1
 
@@ -56,6 +56,8 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^5.0.0
+  mockito: ^5.4.6
+  build_runner: ^2.5.4
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

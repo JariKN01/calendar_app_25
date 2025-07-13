@@ -34,9 +34,20 @@ class _EventListState extends State<EventList> {
     super.initState();
     _controller = EventController();
     _maxEvents = widget.maxEvents;
-    _events = _controller.getEventsAndMatches();
     _selectedTeams = widget.selectedTeams;
     _selectedTeamsEvents = [];
+    _loadEvents();
+  }
+
+  void _loadEvents() {
+    _events = _controller.getEventsAndMatches();
+  }
+
+  @override
+  void didUpdateWidget(EventList oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Reload events when widget updates
+    _loadEvents();
   }
 
   List<Event> getEventsOnSelectedTeams(List<Event> allEvents){
@@ -108,8 +119,7 @@ class _EventListState extends State<EventList> {
   Widget buildListView(List<Event> events) {
     final screenWidth = MediaQuery.of(context).size.width;
     return ListView.builder(
-      //if shrinkWrap doesn't check for _maxEvents, event index becomes completely invisible
-      shrinkWrap: screenWidth > 768 && _maxEvents > 0 ? false : true,
+      shrinkWrap: true,
       itemCount: _maxEvents != 0 ? min(_maxEvents, events.length) : events.length,
       itemBuilder: (context, index) {
         return InkWell(
@@ -140,13 +150,13 @@ class _EventListState extends State<EventList> {
                     _controller.checkInviteStatus(events[index]),
                   ],
                 ),
-              ) : 
+              ) :
               Container(
                 margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
               ),
               eventCard(events[index], index),
             ]
-          ) 
+          )
         );
       }
     );

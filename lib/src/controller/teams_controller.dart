@@ -27,7 +27,7 @@ class TeamController {
   Future<void> _loadTeams() async {
     _user = await User.fromStorage();
     await fetchTeams();
-    await filterUserTeams();
+    await getUserTeams();
   }
 
   // Fetch the teams from the API
@@ -63,7 +63,7 @@ class TeamController {
   }
 
   // Filter the teams the user is a member of
-  Future<void> filterUserTeams() async {
+  Future<void> getUserTeams() async {
     _userTeams = _teams.where((team) {
       return team.members.any((member) => member.id == _user.id);
     }).toList();

@@ -4,9 +4,9 @@ class RegisterView extends StatelessWidget {
   final TextEditingController usernameController;
   final TextEditingController passwordController;
   final TextEditingController passwordCheckController;
-  final VoidCallback? onRegisterPressed; // Accept the callback
+  final VoidCallback? onRegisterPressed;
   final _formKey = GlobalKey<FormState>();
-  final String? errorMessage; // Accept an error message
+  final String? errorMessage;
 
   RegisterView({
     super.key,
@@ -19,147 +19,230 @@ class RegisterView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Scaffold(
       appBar: AppBar(
-        // Makes it so the app start underneath the appbar/status bar in fe android
         toolbarHeight: 0,
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        backgroundColor: colorScheme.surfaceVariant,
+        elevation: 0,
       ),
       body: Container(
-        color: Theme.of(context).colorScheme.inversePrimary,
-        padding: EdgeInsets.all(20),
-        margin: EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              colorScheme.surfaceVariant,
+              colorScheme.surface,
+            ],
+          ),
+        ),
         child: Center(
-          child: Form(
-            key: _formKey,
-            child: SizedBox(
-              // Sets the max width so the content isn't the screen width
-              width: 250,
-              child: LayoutBuilder(
-                builder: (BuildContext context, BoxConstraints viewportConstraints) {
-                  // If the keyboard is opened the screen becomes smaller and is
-                  // made scrollable
-                  return SingleChildScrollView(
-                    // Makes the column the same size as the viewport
-                    child: ConstrainedBox(
-                      constraints: BoxConstraints(
-                        minHeight: viewportConstraints.maxHeight,
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            'Welkom! Kom lekker registereren!',
-                            style: TextStyle(fontSize: 20),
+          child: Card(
+            margin: EdgeInsets.all(20),
+            elevation: 8,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Padding(
+              padding: EdgeInsets.all(24),
+              child: Form(
+                key: _formKey,
+                child: SizedBox(
+                  width: 300,
+                  child: LayoutBuilder(
+                    builder: (BuildContext context, BoxConstraints viewportConstraints) {
+                      return SingleChildScrollView(
+                        child: ConstrainedBox(
+                          constraints: BoxConstraints(
+                            minHeight: viewportConstraints.maxHeight,
                           ),
-                          SizedBox(height: 60),
-                          TextFormField(
-                            controller: usernameController,
-                            decoration: InputDecoration(
-                              labelText: 'Gebruikersnaam',
-                              labelStyle: TextStyle(
-                                  color: Theme
-                                      .of(context)
-                                      .colorScheme
-                                      .primary
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              Icon(
+                                Icons.app_registration,
+                                size: 60,
+                                color: colorScheme.primary,
                               ),
-                              border: OutlineInputBorder(),
-                              filled: true,
-                            ),
-                            validator: (String? value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Vul uw gebruikersnaam in';
-                              }
-                              return null;
-                            },
-                          ),
-                          SizedBox(height: 10),
-                          TextFormField(
-                            controller: passwordController,
-                            decoration: InputDecoration(
-                              labelText: 'Wachtwoord',
-                              labelStyle: TextStyle(
-                                  color: Theme
-                                      .of(context)
-                                      .colorScheme
-                                      .primary
+                              SizedBox(height: 16),
+                              Text(
+                                'Maak een account',
+                                style: TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
+                                  color: colorScheme.primary,
+                                ),
+                                textAlign: TextAlign.center,
                               ),
-                              border: OutlineInputBorder(),
-                              filled: true,
-                            ),
-                            obscureText: true,
-                            validator: (String? value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Vul uw wachtwoord in';
-                              }
-                              return null;
-                            },
-                          ),
-                          SizedBox(height: 5),
-                          TextFormField(
-                            controller: passwordCheckController,
-                            decoration: InputDecoration(
-                              labelText: 'Wachtwoord Herhalen',
-                              labelStyle: TextStyle(
-                                  color: Theme
-                                      .of(context)
-                                      .colorScheme
-                                      .primary
+                              SizedBox(height: 30),
+                              _buildTextField(
+                                controller: usernameController,
+                                label: 'Gebruikersnaam',
+                                icon: Icons.person,
+                                validator: (String? value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Vul uw gebruikersnaam in';
+                                  }
+                                  return null;
+                                },
+                                context: context,
                               ),
-                              border: OutlineInputBorder(),
-                              filled: true,
-                            ),
-                            obscureText: true,
-                            validator: (String? value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Vul uw wachtwoord opnieuw in';
-                              }
-                              return null;
-                            },
-                          ),
-                          SizedBox(height: 10),
-                          ElevatedButton(
-                            onPressed: () {
-                              // Validate the form when the register button is pressed
-                              if (_formKey.currentState?.validate() ?? false) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text('Bezig met registreren...'),
-                                      duration: Duration(seconds: 1),
-                                    )
-                                );
-                                onRegisterPressed!(); // Call the register function
-                              }
-                            },
-                            child: Text('Registreer'),
-                          ),
-                          if (errorMessage !=
-                              null) // Display the error if there is one
-                            Padding(
-                              padding: const EdgeInsets.only(top: 10),
-                              child: Text(
-                                errorMessage!,
-                                style: TextStyle(color: Colors.red),
+                              SizedBox(height: 16),
+                              _buildTextField(
+                                controller: passwordController,
+                                label: 'Wachtwoord',
+                                icon: Icons.lock,
+                                isPassword: true,
+                                validator: (String? value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Vul uw wachtwoord in';
+                                  }
+                                  return null;
+                                },
+                                context: context,
                               ),
-                            ),
-                          SizedBox(height: 0),
-                          TextButton( // Button to the register screen
-                            onPressed: () {
-                              Navigator.pushReplacementNamed(
-                                  context, '/login');
-                            },
-                            child: Text('Login'),
+                              SizedBox(height: 16),
+                              _buildTextField(
+                                controller: passwordCheckController,
+                                label: 'Wachtwoord bevestigen',
+                                icon: Icons.lock_outline,
+                                isPassword: true,
+                                validator: (String? value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Vul uw wachtwoord opnieuw in';
+                                  }
+                                  return null;
+                                },
+                                context: context,
+                              ),
+                              SizedBox(height: 24),
+                              ElevatedButton(
+                                onPressed: () {
+                                  if (_formKey.currentState?.validate() ?? false) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text('Bezig met registreren...'),
+                                        behavior: SnackBarBehavior.floating,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(10),
+                                        ),
+                                        duration: Duration(seconds: 1),
+                                      ),
+                                    );
+                                    onRegisterPressed?.call();
+                                  }
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  padding: EdgeInsets.symmetric(vertical: 15),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(30),
+                                  ),
+                                  backgroundColor: colorScheme.primary,
+                                  foregroundColor: colorScheme.onPrimary,
+                                ),
+                                child: Text(
+                                  'REGISTREER',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    letterSpacing: 1.2,
+                                  ),
+                                ),
+                              ),
+                              if (errorMessage != null)
+                                Container(
+                                  margin: EdgeInsets.only(top: 16),
+                                  padding: EdgeInsets.all(10),
+                                  decoration: BoxDecoration(
+                                    color: Colors.red.withOpacity(0.1),
+                                    borderRadius: BorderRadius.circular(8),
+                                    border: Border.all(color: Colors.red.withOpacity(0.5)),
+                                  ),
+                                  child: Text(
+                                    errorMessage!,
+                                    style: TextStyle(color: Colors.red),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              SizedBox(height: 16),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    'Al een account?',
+                                    style: TextStyle(color: colorScheme.onSurface.withOpacity(0.7)),
+                                  ),
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.pushReplacementNamed(context, '/login');
+                                    },
+                                    style: TextButton.styleFrom(
+                                      padding: EdgeInsets.symmetric(horizontal: 8),
+                                    ),
+                                    child: Text(
+                                      'Inloggen',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                    ),
-                  );
-                }
+                        ),
+                      );
+                    },
+                  ),
+                ),
               ),
             ),
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildTextField({
+    required TextEditingController controller,
+    required String label,
+    required IconData icon,
+    required BuildContext context,
+    bool isPassword = false,
+    String? Function(String?)? validator,
+  }) {
+    return TextFormField(
+      controller: controller,
+      obscureText: isPassword,
+      decoration: InputDecoration(
+        labelText: label,
+        prefixIcon: Icon(icon, color: Theme.of(context).colorScheme.primary),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(width: 1),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(
+            color: Theme.of(context).colorScheme.outline,
+            width: 1,
+          ),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(
+            color: Theme.of(context).colorScheme.primary,
+            width: 2,
+          ),
+        ),
+        filled: true,
+        fillColor: Theme.of(context).colorScheme.surface,
+        contentPadding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+      ),
+      validator: validator,
     );
   }
 }

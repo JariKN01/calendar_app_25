@@ -36,32 +36,52 @@ class _TeamGridState extends State<TeamGrid> {
   @override
   void initState() {
     super.initState();
-    // If the controller is set, use the set controller, else create a new controller
     _controller = widget.controller ?? TeamController();
     _searchController = widget.searchController;
     _searchController?.addListener(_onSearchChanged);
-    // _teams = widget.teams ?? _controller.userTeams;
     _maxTeams = widget.maxTeams;
     _getUser();
-    // Listens for changes in the teamsList
-    _controller.teamsNotifier.addListener(() {
+
+    // Always try to get user teams when widget is initialized
+    if (widget.teams == null) {
+      _controller.getUserTeams();
+    } else {
+      // If teams are provided via widget, use them immediately
+      setState(() {
+        _teams = widget.teams!;
+        isInitialized = true;
+      });
+    }
+
+    _controller.teamsNotifier.addListener(_teamsListener);
+  }
+
+  void _teamsListener() {
+    if (mounted) {
       setState(() {
         isInitialized = true;
         _teams = widget.teams ?? _controller.userTeams;
       });
-    });
+    }
+  }
+
+  @override
+  void dispose() {
+    _searchController?.removeListener(_onSearchChanged);
+    _controller.teamsNotifier.removeListener(_teamsListener);
+    super.dispose();
   }
 
   void _onSearchChanged() {
-    // Rebuild when the input is changed
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   void _getUser() async {
     _user = await User.fromStorage();
   }
 
-  // Builds a column with the name and description of the team
   Widget _buildNameDescription(BuildContext context, int index, Team team) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -71,126 +91,163 @@ class _TeamGridState extends State<TeamGrid> {
           team.name,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+            fontWeight: FontWeight.w600,
+            color: Theme.of(context).colorScheme.onSurface,
+          ),
         ),
+        const SizedBox(height: 4),
         Text(
           team.description ?? '',
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
-          style: TextStyle(fontSize: 12),
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+          ),
         ),
       ],
     );
   }
 
-  // Builds the gridview with the teams
   Widget _buildGridView(BuildContext context, List<Team> teams) {
-    // Get the screen width
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
 
     return GridView.builder(
-      // If the screen is small(mobile) set shrinkwrap to true
-      // If shrinkwrap is true it makes the widget the size of the content
-        shrinkWrap: screenWidth > 768 ? false : true,
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          // Calculates the aspect ratio based on the dimensions of the screen
-          childAspectRatio: 
-            screenWidth <= 1024 
+      shrinkWrap: true,
+      padding: const EdgeInsets.all(16),
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        crossAxisSpacing: 16,
+        mainAxisSpacing: 16,
+        childAspectRatio: screenWidth <= 1024
             ? screenWidth / (screenHeight / 2.4)
-            : screenWidth / (screenHeight / 1.6)
-        ),
-        // If maxTeams is set it displays the set amount of teams, else display all
-        itemCount: _maxTeams != 0 ? min(_maxTeams, teams.length) : teams.length,
-        itemBuilder: (context, index) {
-          return InkWell(
-            onTap: () { showDialog(
+            : screenWidth / (screenHeight / 1.6),
+      ),
+      itemCount: _maxTeams != 0 ? min(_maxTeams, teams.length) : teams.length,
+      itemBuilder: (context, index) {
+        return Material(
+          elevation: 2,
+          borderRadius: BorderRadius.circular(12),
+          color: Theme.of(context).colorScheme.surface,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(12),
+            onTap: () {
+              showDialog(
                 context: context,
                 builder: (BuildContext context) {
-                  return TeamReadView(team: teams[index], user: _user, controller: _controller,);
-                }
-            );},
+                  return TeamReadView(
+                    team: teams[index],
+                    user: _user,
+                    controller: _controller,
+                  );
+                },
+              );
+            },
             child: Stack(
-                children: [
-                  // Fill the card to it's max size
-                  Positioned.fill(
-                    child: Card(
-                      elevation: 4,
-                      child: Padding(
-                        padding: EdgeInsets.all(8),
-                        // If the screen is wider than 768 pixels display the widgets next to each other
-                        // Else display them underneath each-other
-                        child: screenWidth > 768
-                            ?Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            teams[index].getIcon(),
-                            SizedBox(width: 10),
-                            Expanded(
-                              child: _buildNameDescription(context, index, teams[index]),
-                            ),
-                          ],
-                        )
-                            : Column(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            teams[index].getIcon(),
-                            _buildNameDescription(context, index, teams[index]),
-                          ],
+              children: [
+                Positioned.fill(
+                  child: Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: Theme.of(context).colorScheme.outline.withOpacity(0.2),
+                      ),
+                    ),
+                    child: screenWidth > 768
+                        ? Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        teams[index].getIcon(),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: _buildNameDescription(context, index, teams[index]),
                         ),
+                      ],
+                    )
+                        : Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        teams[index].getIcon(),
+                        const SizedBox(height: 8),
+                        _buildNameDescription(context, index, teams[index]),
+                      ],
+                    ),
+                  ),
+                ),
+                if (_user.id == teams[index].ownerId)
+                  Positioned(
+                    top: 12,
+                    right: 12,
+                    child: Container(
+                      padding: const EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                        color: Colors.amber.withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: const Text(
+                        '👑',
+                        style: TextStyle(fontSize: 16),
                       ),
                     ),
                   ),
-                  // If the user is owner of the team, display an crown on the card
-                  if (_user.id == teams[index].ownerId)
-                    Positioned(
-                      top: 10,
-                      left: 15,
-                      child: Text(
-                        '👑',
-                        // Gold text color because otherwise the web makes a black outline of the crown
-                        style: TextStyle(
-                          color: Colors.yellowAccent,
-                          fontSize: 18,
-                        ),
-                      ),
-                    ),
-                ]
+              ],
             ),
-          );
-        }
+          ),
+        );
+      },
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    if(!isInitialized){
+    if (!isInitialized) {
       return Center(
-        child: CircularProgressIndicator(),
-      );
-    }
-    // If the user is not a member of any team, display a message
-    if (_teams.isEmpty) {
-      return Center(
-        child: Text(
-          'U bent nog geen beheerder of lid van een team',
-            textAlign: TextAlign.center
-        )
+        child: CircularProgressIndicator(
+          color: Theme.of(context).colorScheme.primary,
+        ),
       );
     }
 
-    // If the searchController is not null, filter the teams based on the search input
-    if (_searchController != null) {
-      _teams.where((item) =>
-          item.name.toLowerCase().contains(
-              _searchController?.text.toLowerCase() as Pattern))
+    if (_teams.isEmpty) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.group_off_outlined,
+                size: 64,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'U bent nog geen beheerder of lid van een team',
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    List<Team> filteredTeams = _teams;
+    if (_searchController != null && _searchController!.text.isNotEmpty) {
+      filteredTeams = _teams
+          .where((item) => item.name
+          .toLowerCase()
+          .contains(_searchController!.text.toLowerCase()))
           .toList();
     }
 
-    return _buildGridView(context, _teams);
+    return _buildGridView(context, filteredTeams);
   }
 }

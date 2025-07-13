@@ -120,8 +120,13 @@ class EventDetails extends StatelessWidget{
               Column(
                 children: [
                   Text("Locatie", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-                  //Cool Map
-                  SizedBox(
+                  //Cool Map - only show if location exists
+                  event.location.isNotEmpty &&
+                  event.location.containsKey('latitude') &&
+                  event.location.containsKey('longitude') &&
+                  event.location['latitude'] != null &&
+                  event.location['longitude'] != null
+                  ? SizedBox(
                     height: 300,
                     width: 450,
                     child: 
@@ -154,6 +159,27 @@ class EventDetails extends StatelessWidget{
                                 ),
                               ),
                             ]
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
+                  : Container(
+                    height: 100,
+                    width: 450,
+                    decoration: BoxDecoration(
+                      border: Border.all(width: 1.25, color: Colors.grey),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.location_off, size: 40, color: Colors.grey),
+                          SizedBox(height: 8),
+                          Text(
+                            'Geen locatie opgegeven',
+                            style: TextStyle(color: Colors.grey, fontSize: 16),
                           ),
                         ],
                       ),

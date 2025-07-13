@@ -1,21 +1,23 @@
+import 'package:agenda_app/src/controller/matches_controller.dart';
 import 'package:agenda_app/src/controller/teams_controller.dart';
 import 'package:agenda_app/src/model/team.dart';
-import 'package:agenda_app/src/view/events/create_view.dart';
-import 'package:agenda_app/src/widgets/event_listview.dart';
+import 'package:agenda_app/src/view/matches/create_view.dart';
+import 'package:agenda_app/src/widgets/match_listview.dart';
 import 'package:flutter/material.dart';
 import 'package:multi_dropdown/multi_dropdown.dart';
 
-class EventIndex extends StatefulWidget{
-  const EventIndex({super.key});
+class MatchIndex extends StatefulWidget{
+  const MatchIndex({super.key});
 
   @override
   State<StatefulWidget> createState(){
-    return _EventIndexState();
+    return _MatchIndexState();
   }
 }
 
-class _EventIndexState extends State<EventIndex>{
+class _MatchIndexState extends State<MatchIndex>{
   late TeamController teamController;
+  late MatchController matchController;
   late MultiSelectController<Team> multiSelectController;
   late List<DropdownItem<Team>> teamsDropdown = [];
   late List<Team> selectedTeams = [];
@@ -25,6 +27,7 @@ class _EventIndexState extends State<EventIndex>{
   void initState(){
     super.initState();
     teamController = TeamController();
+    matchController = MatchController();
     multiSelectController = MultiSelectController<Team>();
     selectedTeamsNotifier = ValueNotifier(selectedTeams.length);
     teamController.teamsNotifier.addListener((){
@@ -52,7 +55,7 @@ class _EventIndexState extends State<EventIndex>{
   setSelectedTeams(){
     //Clear selected teams
     selectedTeams.clear();
-    //Add teams based on multidropdown controller value 
+    //Add teams based on multidropdown controller value
     for(DropdownItem item in multiSelectController.selectedItems){
       selectedTeams.add(item.value);
     }
@@ -66,12 +69,26 @@ class _EventIndexState extends State<EventIndex>{
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Evenementen',
+          'Wedstrijden',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         backgroundColor: colorScheme.primary,
         foregroundColor: colorScheme.onPrimary,
         elevation: 2,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.sports_soccer),
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return MatchCreation();
+                },
+              );
+            },
+            tooltip: 'Nieuwe wedstrijd',
+          ),
+        ],
       ),
       body: Container(
         decoration: BoxDecoration(
@@ -155,7 +172,7 @@ class _EventIndexState extends State<EventIndex>{
               ),
             ),
 
-            // Events List Card
+            // Matches List Card
             Expanded(
               child: Card(
                 elevation: 8,
@@ -174,13 +191,13 @@ class _EventIndexState extends State<EventIndex>{
                       Row(
                         children: [
                           Icon(
-                            Icons.event,
+                            Icons.sports_soccer,
                             color: colorScheme.primary,
                             size: 28,
                           ),
                           SizedBox(width: 12),
                           Text(
-                            'Alle Evenementen',
+                            'Alle Wedstrijden',
                             style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
@@ -194,7 +211,7 @@ class _EventIndexState extends State<EventIndex>{
                         child: ValueListenableBuilder(
                           valueListenable: selectedTeamsNotifier,
                           builder: (context, value, child){
-                            return EventList(selectedTeams: selectedTeams);
+                            return MatchList(selectedTeams: selectedTeams);
                           },
                         ),
                       ),
@@ -211,15 +228,15 @@ class _EventIndexState extends State<EventIndex>{
           showDialog(
             context: context,
             builder: (BuildContext context) {
-              return EventCreation();
+              return MatchCreation();
             },
           );
         },
         backgroundColor: colorScheme.primaryContainer,
         foregroundColor: colorScheme.onPrimaryContainer,
         elevation: 8,
-        child: Icon(Icons.add),
-        tooltip: 'Nieuw Evenement',
+        child: Icon(Icons.sports_soccer),
+        tooltip: 'Nieuwe Wedstrijd',
       ),
     );
   }

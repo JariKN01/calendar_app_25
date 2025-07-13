@@ -6,7 +6,7 @@ import 'package:agenda_app/src/view/events/create_view.dart';
 import 'package:agenda_app/src/view/partials.dart';
 import 'package:agenda_app/src/view/teams/update_view.dart';
 import 'package:flutter/material.dart';
-import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
+// import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 
 // Widgets for the team create/edit views
 
@@ -178,6 +178,25 @@ Widget _buildButton(
 // Adds a member to the team by scanning a QR code
 VoidCallback _scanQrCode(BuildContext context, TeamController controller, Team team) {
   return () async {
+    // Tijdelijk uitgeschakeld omdat de barcode scanner package verwijderd is
+    if (context.mounted) {
+      showDialog(
+        context: context,
+        builder: (context) =>
+          AlertDialog(
+            title: Text('Functionaliteit tijdelijk niet beschikbaar'),
+            content: Text('QR-code scannen is momenteel niet beschikbaar.'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text('OK'),
+              ),
+            ],
+          ),
+      );
+    }
+
+    /* Oorspronkelijke code uitgeschakeld:
     // Open the QR code scanner
     String? result = await SimpleBarcodeScanner.scanBarcode(
       context,
@@ -232,6 +251,7 @@ VoidCallback _scanQrCode(BuildContext context, TeamController controller, Team t
         );
       }
     }
+    */
   };
 }
 

@@ -28,7 +28,7 @@ class _HomeControllerState extends State<HomeController>
     super.initState();
     // Check if the user is logged in
     _checkLoggedIn();
-    _tabController = TabController(length: 3, vsync: this, initialIndex: 1);
+    _tabController = TabController(length: 4, vsync: this, initialIndex: 1); // Changed from 3 to 4 tabs
     _tabController.addListener(_onTabChanged); // Check if the user changes tabs
     _bannerText = createBannerText();
   }
@@ -90,11 +90,24 @@ class _HomeControllerState extends State<HomeController>
       case 0:
         return 'Agenda';
       case 1:
-        return 'Welkom, ${_user?.name.capitalize()}!';
+        return ''; // Empty string to hide banner on home tab
       case 2:
+        return 'Wedstrijden';
+      case 3:
         return 'Teams';
       default:
         return 'Unknown Tab'; // Fallback case for safety
+    }
+  }
+
+  // Logout function
+  Future<void> _logout() async {
+    // Clear all stored data
+    await storage.deleteAll();
+
+    if (mounted) {
+      // Navigate to login screen
+      Navigator.pushReplacementNamed(context, '/login');
     }
   }
 
@@ -110,6 +123,7 @@ class _HomeControllerState extends State<HomeController>
       user: _user,
       bannerText: _bannerText,
       tabController: _tabController,
+      onLogout: _logout, // Pass logout function to view
     );
   }
 }

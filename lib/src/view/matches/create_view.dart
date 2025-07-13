@@ -1,35 +1,29 @@
-import 'package:agenda_app/src/controller/events_controller.dart';
+import 'package:agenda_app/src/controller/matches_controller.dart';
 import 'package:agenda_app/src/controller/teams_controller.dart';
-import 'package:agenda_app/src/model/event.dart';
 import 'package:agenda_app/src/model/team.dart';
 import 'package:flutter/material.dart';
 
-class EventUpdate extends StatefulWidget{
-  final Event event;
-  final EventController controller;
-
-  const EventUpdate({
-    super.key, 
-    required this.event,
-    required this.controller,
-  });
+class MatchCreation extends StatefulWidget {
+  const MatchCreation({super.key});
 
   @override
-  State<EventUpdate> createState() => _EventUpdateState();
+  State<MatchCreation> createState() => _MatchCreationState();
 }
 
-class _EventUpdateState extends State<EventUpdate> {
+class _MatchCreationState extends State<MatchCreation> {
   final _formKey = GlobalKey<FormState>();
-  late TextEditingController _nameController;
-  late TextEditingController _descriptionController;
+  final _titleController = TextEditingController();
+  final _descriptionController = TextEditingController();
 
   DateTime? _startDate;
   TimeOfDay? _startTime;
   DateTime? _endDate;
   TimeOfDay? _endTime;
-  Team? _selectedTeam;
+  Team? _homeTeam;
+  Team? _awayTeam;
 
   late TeamController _teamController;
+  late MatchController _matchController;
   bool _isLoading = false;
   String? _errorMessage;
 
@@ -37,37 +31,12 @@ class _EventUpdateState extends State<EventUpdate> {
   void initState() {
     super.initState();
     _teamController = TeamController();
-
-    // Initialize with existing event data
-    _nameController = TextEditingController(text: widget.event.title);
-    _descriptionController = TextEditingController(text: widget.event.description);
-
-    _startDate = DateTime(
-      widget.event.datetimeStart.year,
-      widget.event.datetimeStart.month,
-      widget.event.datetimeStart.day,
-    );
-    _startTime = TimeOfDay(
-      hour: widget.event.datetimeStart.hour,
-      minute: widget.event.datetimeStart.minute,
-    );
-
-    _endDate = DateTime(
-      widget.event.datetimeEnd.year,
-      widget.event.datetimeEnd.month,
-      widget.event.datetimeEnd.day,
-    );
-    _endTime = TimeOfDay(
-      hour: widget.event.datetimeEnd.hour,
-      minute: widget.event.datetimeEnd.minute,
-    );
-
-    _selectedTeam = widget.event.team;
+    _matchController = MatchController();
   }
 
   @override
   void dispose() {
-    _nameController.dispose();
+    _titleController.dispose();
     _descriptionController.dispose();
     super.dispose();
   }
@@ -124,19 +93,33 @@ class _EventUpdateState extends State<EventUpdate> {
     }
   }
 
-  Future<void> _updateEvent() async {
+  String _generateMatchTitle() {
+    if (_homeTeam != null && _awayTeam != null) {
+      return '${_homeTeam!.name} vs ${_awayTeam!.name}';
+    }
+    return '';
+  }
+
+  Future<void> _createMatch() async {
     if (!_formKey.currentState!.validate()) return;
 
     if (_startDate == null || _startTime == null || _endDate == null || _endTime == null) {
       setState(() {
-        _errorMessage = 'Selecteer start- en eindatum/tijd';
+        _errorMessage = 'Selecteer start- en einddatum/tijd';
       });
       return;
     }
 
-    if (_selectedTeam == null) {
+    if (_homeTeam == null || _awayTeam == null) {
       setState(() {
-        _errorMessage = 'Selecteer een team';
+        _errorMessage = 'Selecteer beide teams';
+      });
+      return;
+    }
+
+    if (_homeTeam!.id == _awayTeam!.id) {
+      setState(() {
+        _errorMessage = 'Een team kan niet tegen zichzelf spelen';
       });
       return;
     }
@@ -171,20 +154,36 @@ class _EventUpdateState extends State<EventUpdate> {
         return;
       }
 
-      // TODO: Implement updateEvent method in EventController
-      // For now, just show success message
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Evenement "${_nameController.text}" bijgewerkt!'),
-          backgroundColor: Colors.green,
-        ),
+      // Call the actual API to create the match
+      final matchTitle = _titleController.text.isNotEmpty
+        ? _titleController.text
+        : _generateMatchTitle();
+
+      final success = await _matchController.createMatch(
+        title: matchTitle,
+        description: _descriptionController.text,
+        datetimeStart: startDateTime,
+        datetimeEnd: endDateTime,
+        teamId: _homeTeam!.id, // Use home team as the main team
+        metadata: {
+          'homeTeamId': _homeTeam!.id,
+          'awayTeamId': _awayTeam!.id,
+          'matchType': 'team_vs_team',
+        },
       );
 
-      Navigator.pop(context);
-      Navigator.pop(context); // Close both dialogs
+      if (success) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Wedstrijd "$matchTitle" succesvol aangemaakt!'),
+            backgroundColor: Colors.green,
+          ),
+        );
+        Navigator.pop(context);
+      }
     } catch (e) {
       setState(() {
-        _errorMessage = 'Fout bij bijwerken evenement: $e';
+        _errorMessage = 'Fout bij aanmaken wedstrijd: $e';
         _isLoading = false;
       });
     }
@@ -192,6 +191,8 @@ class _EventUpdateState extends State<EventUpdate> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Dialog(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
@@ -200,7 +201,7 @@ class _EventUpdateState extends State<EventUpdate> {
       insetPadding: EdgeInsets.all(20),
       child: Container(
         padding: EdgeInsets.all(24),
-        constraints: BoxConstraints(maxWidth: 500, maxHeight: 600),
+        constraints: BoxConstraints(maxWidth: 500, maxHeight: 700),
         child: Form(
           key: _formKey,
           child: SingleChildScrollView(
@@ -217,7 +218,7 @@ class _EventUpdateState extends State<EventUpdate> {
                     ),
                     Expanded(
                       child: Text(
-                        'Evenement Bewerken',
+                        'Wedstrijd Aanmaken',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 20,
@@ -225,7 +226,7 @@ class _EventUpdateState extends State<EventUpdate> {
                         ),
                       ),
                     ),
-                    SizedBox(width: 48),
+                    Icon(Icons.sports_soccer, size: 28, color: colorScheme.primary),
                   ],
                 ),
                 SizedBox(height: 20),
@@ -235,30 +236,148 @@ class _EventUpdateState extends State<EventUpdate> {
                   width: double.maxFinite,
                   padding: EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.primaryContainer,
+                    color: colorScheme.primaryContainer,
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Name field
+                      // Team selection
+                      Text(
+                        'Teams',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: colorScheme.primary,
+                        ),
+                      ),
+                      SizedBox(height: 16),
+
+                      // Home team selection
+                      FutureBuilder<List<Team>>(
+                        future: Future.value(_teamController.userTeams),
+                        builder: (context, snapshot) {
+                          final teams = snapshot.data ?? [];
+                          if (teams.isEmpty) {
+                            return Text('Geen teams beschikbaar');
+                          }
+
+                          return DropdownButtonFormField<Team>(
+                            value: _homeTeam,
+                            decoration: InputDecoration(
+                              labelText: 'Thuis Team',
+                              prefixIcon: Icon(Icons.home),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              filled: true,
+                              fillColor: colorScheme.surface,
+                            ),
+                            items: teams.map((team) {
+                              return DropdownMenuItem<Team>(
+                                value: team,
+                                child: Text(team.name),
+                              );
+                            }).toList(),
+                            onChanged: (Team? newValue) {
+                              setState(() {
+                                _homeTeam = newValue;
+                                // Auto-generate title when teams change
+                                if (_titleController.text.isEmpty) {
+                                  _titleController.text = _generateMatchTitle();
+                                }
+                              });
+                            },
+                            validator: (value) {
+                              if (value == null) {
+                                return 'Selecteer thuis team';
+                              }
+                              return null;
+                            },
+                          );
+                        },
+                      ),
+                      SizedBox(height: 16),
+
+                      // VS indicator
+                      Center(
+                        child: Container(
+                          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                          decoration: BoxDecoration(
+                            color: colorScheme.primary,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Text(
+                            'VS',
+                            style: TextStyle(
+                              color: colorScheme.onPrimary,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 16),
+
+                      // Away team selection
+                      FutureBuilder<List<Team>>(
+                        future: Future.value(_teamController.userTeams),
+                        builder: (context, snapshot) {
+                          final teams = snapshot.data ?? [];
+                          if (teams.isEmpty) {
+                            return Text('Geen teams beschikbaar');
+                          }
+
+                          return DropdownButtonFormField<Team>(
+                            value: _awayTeam,
+                            decoration: InputDecoration(
+                              labelText: 'Uit Team',
+                              prefixIcon: Icon(Icons.flight_takeoff),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              filled: true,
+                              fillColor: colorScheme.surface,
+                            ),
+                            items: teams.map((team) {
+                              return DropdownMenuItem<Team>(
+                                value: team,
+                                child: Text(team.name),
+                              );
+                            }).toList(),
+                            onChanged: (Team? newValue) {
+                              setState(() {
+                                _awayTeam = newValue;
+                                // Auto-generate title when teams change
+                                if (_titleController.text.isEmpty) {
+                                  _titleController.text = _generateMatchTitle();
+                                }
+                              });
+                            },
+                            validator: (value) {
+                              if (value == null) {
+                                return 'Selecteer uit team';
+                              }
+                              return null;
+                            },
+                          );
+                        },
+                      ),
+                      SizedBox(height: 24),
+
+                      // Match title field (optional, auto-generated)
                       TextFormField(
-                        controller: _nameController,
+                        controller: _titleController,
                         decoration: InputDecoration(
-                          labelText: 'Evenement Naam',
-                          hintText: 'Voer de naam van het evenement in',
+                          labelText: 'Wedstrijd Naam (optioneel)',
+                          hintText: 'Wordt automatisch gegenereerd',
+                          prefixIcon: Icon(Icons.sports),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8),
                           ),
                           filled: true,
-                          fillColor: Theme.of(context).colorScheme.surface,
+                          fillColor: colorScheme.surface,
                         ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Voer een naam in';
-                          }
-                          return null;
-                        },
                       ),
                       SizedBox(height: 16),
 
@@ -267,13 +386,14 @@ class _EventUpdateState extends State<EventUpdate> {
                         controller: _descriptionController,
                         maxLines: 3,
                         decoration: InputDecoration(
-                          labelText: 'Evenement Beschrijving',
+                          labelText: 'Beschrijving',
                           hintText: 'Voer een beschrijving in',
+                          prefixIcon: Icon(Icons.description),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8),
                           ),
                           filled: true,
-                          fillColor: Theme.of(context).colorScheme.surface,
+                          fillColor: colorScheme.surface,
                         ),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -282,33 +402,19 @@ class _EventUpdateState extends State<EventUpdate> {
                           return null;
                         },
                       ),
-                      SizedBox(height: 16),
+                      SizedBox(height: 24),
 
-                      // Team selection (read-only for update)
-                      Container(
-                        padding: EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.surface,
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: Theme.of(context).colorScheme.outline),
-                        ),
-                        child: Row(
-                          children: [
-                            Icon(Icons.group, color: Theme.of(context).colorScheme.primary),
-                            SizedBox(width: 12),
-                            Text(
-                              'Team: ${_selectedTeam?.name ?? 'Onbekend'}',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ],
+                      // Date and time selection
+                      Text(
+                        'Wedstrijd Schema',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: colorScheme.primary,
                         ),
                       ),
                       SizedBox(height: 16),
 
-                      // Date and time selection
                       Text(
                         'Start Datum & Tijd',
                         style: TextStyle(fontWeight: FontWeight.bold),
@@ -399,7 +505,7 @@ class _EventUpdateState extends State<EventUpdate> {
                       child: Text('Annuleren'),
                     ),
                     ElevatedButton(
-                      onPressed: _isLoading ? null : _updateEvent,
+                      onPressed: _isLoading ? null : _createMatch,
                       style: ElevatedButton.styleFrom(
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30),
@@ -412,7 +518,7 @@ class _EventUpdateState extends State<EventUpdate> {
                             height: 16,
                             child: CircularProgressIndicator(strokeWidth: 2),
                           )
-                        : Text('Bijwerken'),
+                        : Text('Maak Wedstrijd Aan'),
                     ),
                   ],
                 ),

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:agenda_app/src/constants.dart';
 import 'package:agenda_app/src/extensions/datetime.dart';
 import 'package:agenda_app/src/model/invite.dart';
 import 'package:agenda_app/src/model/team.dart';
@@ -27,8 +28,8 @@ class EventController {
     FlutterSecureStorage storage = FlutterSecureStorage();
     // Get the token to authenticate against the api
     final String? token = await storage.read(key: 'token');
-    final eventUrl = Uri.parse('https://team-management-api.dops.tech/api/v2/events');
-    final matchUrl = Uri.parse('https://team-management-api.dops.tech/api/v2/matches');
+    final eventUrl = Uri.parse('${Constants.baseApiUrl}/events');
+    final matchUrl = Uri.parse('${Constants.baseApiUrl}/matches');
     dynamic events;
     dynamic matches;
     List<Event> eventsList = [];
@@ -52,7 +53,7 @@ class EventController {
       );
     } catch (e) {
       // Throw exception
-      throw Exception('Failed to load teams: $e');
+      throw Exception('Failed to load events: $e');
     }
 
     if (events.statusCode == HttpStatus.ok && matches.statusCode == HttpStatus.ok) {
@@ -87,7 +88,7 @@ class EventController {
 
       return eventsList;
     } else {
-      throw Exception('Failed to load teams');
+      throw Exception('Failed to load events');
     }
   }
 
@@ -105,5 +106,50 @@ class EventController {
       }
     }
     return Text("Aankomend");
+  }
+
+  // Create a new event
+  Future<bool> createEvent({
+    required String title,
+    required String description,
+    required DateTime datetimeStart,
+    required DateTime datetimeEnd,
+    required int teamId,
+    Map<String, dynamic>? metadata,
+  }) async {
+    final String? token = await _storage.read(key: 'token');
+    final url = Uri.parse('${Constants.baseApiUrl}/events');
+
+    final body = jsonEncode({
+      'title': title,
+      'description': description,
+      'datetimeStart': datetimeStart.toIso8601String(),
+      'datetimeEnd': datetimeEnd.toIso8601String(),
+      'teamId': teamId,
+      'metadata': metadata ?? {},
+    });
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {
+          HttpHeaders.contentTypeHeader: 'application/json',
+          HttpHeaders.authorizationHeader: 'Bearer $token',
+        },
+        body: body,
+      );
+
+      if (response.statusCode == HttpStatus.created) {
+        // Event successfully created
+        return true;
+      } else {
+        // Handle different error status codes
+        final responseBody = jsonDecode(response.body);
+        final errorMessage = responseBody['error']?.join(', ') ?? 'Unknown error';
+        throw Exception('Failed to create event: $errorMessage');
+      }
+    } catch (e) {
+      throw Exception('Failed to create event: $e');
+    }
   }
 }
