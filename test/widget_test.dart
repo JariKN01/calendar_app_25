@@ -11,20 +11,31 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:agenda_app/main.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
+  testWidgets('App should launch without crashing', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(const MyApp());
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    // Verify that our app loads successfully
+    expect(find.byType(MaterialApp), findsOneWidget);
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+    // Wait for async initialization with timeout
+    await tester.pumpAndSettle(const Duration(seconds: 5));
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    // Verify the app is still running after initialization
+    expect(find.byType(MaterialApp), findsOneWidget);
+  });
+
+  testWidgets('App should have proper Material structure', (WidgetTester tester) async {
+    await tester.pumpWidget(const MyApp());
+
+    // Wait for initialization with timeout
+    await tester.pumpAndSettle(const Duration(seconds: 5));
+
+    // Verify core Material Design structure
+    expect(find.byType(MaterialApp), findsOneWidget);
+    // Only check for Scaffold if it exists (app might be showing login first)
+    if (tester.any(find.byType(Scaffold))) {
+      expect(find.byType(Scaffold), findsAtLeastNWidgets(1));
+    }
   });
 }

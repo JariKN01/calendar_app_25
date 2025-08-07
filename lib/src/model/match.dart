@@ -21,7 +21,7 @@ class Match extends Event {
 
   factory Match.fromJson(Map<String, dynamic> json) {
     try {
-      final List<dynamic> invites = json['invites'];
+      final List<dynamic>? invites = json['invites'] as List<dynamic>?;
       json.remove('invites');
       // Call the Event's fromJson for common fields
       final Event event = Event.fromJson(json);
@@ -38,7 +38,7 @@ class Match extends Event {
         createdAt: event.createdAt,
         updatedAt: event.updatedAt,
         team: event.team,
-        invites: invites.map((invite) => Invite.fromJson(invite)).toList() ?? []
+        invites: invites?.map((invite) => Invite.fromJson(invite)).toList() ?? []
       );
     } catch (e) {
       // Include the original JSON map in the exception message
