@@ -1,4 +1,4 @@
-# Agenda App
+# Calendar_app_25
 
 Een cross-platform kalender en agenda applicatie gebouwd met Flutter, met ondersteuning voor Android, Web en Windows platforms.
 
@@ -11,9 +11,7 @@ Een cross-platform kalender en agenda applicatie gebouwd met Flutter, met onders
 - 🏠 Home dashboard
 - 🎨 Modern Material Design UI
 
-## Aan de slag
-
-### Vereisten
+## Vereisten
 
 - Flutter SDK (3.24.3 of later)
 - Dart SDK (3.5.3 of later)
@@ -23,7 +21,7 @@ Een cross-platform kalender en agenda applicatie gebouwd met Flutter, met onders
 
 ### Installatie
 
-1. Kloon de repository:
+1. Clone de repository:
    ```bash
    git clone <repository-url>
    cd calendar_app_25
