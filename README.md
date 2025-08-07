@@ -1,64 +1,60 @@
 # Agenda App
 
-A cross-platform calendar and agenda application built with Flutter, supporting Android, Web, and Windows platforms.
+Een cross-platform kalender en agenda applicatie gebouwd met Flutter, met ondersteuning voor Android, Web en Windows platforms.
 
-## Features
+## Functies
 
-- 📅 Calendar view and event management
-- 🔐 User authentication
-- 📱 Cross-platform support (Android, Web, Windows)
-- 🎯 Event tracking and scheduling
+- 📅 Kalenderweergave en evenementenbeheer
+- 🔐 Gebruikersauthenticatie
+- 📱 Cross-platform ondersteuning (Android, Web, Windows)
+- 🎯 Gebeurtenissen bijhouden en plannen
 - 🏠 Home dashboard
 - 🎨 Modern Material Design UI
 
-## Screenshots
+## Aan de slag
 
-![App Screenshot](flutter_01.png)
+### Vereisten
 
-## Getting Started
+- Flutter SDK (3.24.3 of later)
+- Dart SDK (3.5.3 of later)
+- Voor Android: Android Studio met Android SDK
+- Voor Windows: Visual Studio met C++ tools
+- Voor Web: Chrome browser
 
-### Prerequisites
+### Installatie
 
-- Flutter SDK (3.24.3 or later)
-- Dart SDK (3.5.3 or later)
-- For Android: Android Studio with Android SDK
-- For Windows: Visual Studio with C++ tools
-- For Web: Chrome browser
-
-### Installation
-
-1. Clone the repository:
+1. Kloon de repository:
    ```bash
    git clone <repository-url>
    cd calendar_app_25
    ```
 
-2. Install dependencies:
+2. Installeer dependencies:
    ```bash
    flutter pub get
    ```
 
-3. Run the app:
+3. Start de app:
    ```bash
    flutter run
    ```
 
-### Configuration
+### Configuratie
 
-The app supports runtime configuration via Dart defines:
+De app ondersteunt runtime configuratie via Dart defines:
 
 ```bash
-flutter run --dart-define=TOKEN=your_token_here
+flutter run --dart-define=TOKEN=jouw_token_hier
 ```
 
-## Building for Production
+## Bouwen voor Productie
 
 ### Android
 ```bash
-# Build APK
+# Bouw APK
 flutter build apk --release
 
-# Build App Bundle (recommended for Play Store)
+# Bouw App Bundle (aanbevolen voor Play Store)
 flutter build appbundle --release
 ```
 
@@ -72,66 +68,66 @@ flutter build web --release
 flutter build windows --release
 ```
 
-## Testing
+## Testen
 
-Run unit tests:
+Voer unit tests uit:
 ```bash
 flutter test
 ```
 
-Run integration tests:
+Voer integratie tests uit:
 ```bash
 flutter test integration_test/
 ```
 
-## Project Structure
+## Project Structuur
 
 ```
 lib/
 ├── main.dart                 # App entry point
 └── src/
-    ├── constants.dart        # App constants
+    ├── constants.dart        # App constanten
     ├── controller/          # Business logic controllers
     │   ├── auth_controller.dart
     │   ├── events_controller.dart
     │   └── home_controller.dart
-    ├── extensions/          # Dart extensions
-    ├── model/              # Data models
-    ├── view/               # UI screens
-    └── widgets/            # Reusable UI components
+    ├── extensions/          # Dart extensies
+    ├── model/              # Data modellen
+    ├── view/               # UI schermen
+    └── widgets/            # Herbruikbare UI componenten
 ```
 
-## Development
+## Ontwikkeling
 
-### Code Style
-This project follows Dart/Flutter coding conventions. Format your code with:
+### Code Stijl
+Dit project volgt Dart/Flutter coding conventies. Formatteer je code met:
 ```bash
 dart format .
 ```
 
-### Static Analysis
-Run static analysis:
+### Statische Analyse
+Voer statische analyse uit:
 ```bash
 flutter analyze
 ```
 
 ## CI/CD
 
-This project includes a GitHub Actions workflow that:
-- Runs tests and code analysis
-- Builds for Android (APK & AAB)
-- Builds for Web
-- Builds for Windows
-- Uploads build artifacts
+Dit project bevat een GitHub Actions workflow die:
+- Tests en code analyse uitvoert
+- Bouwt voor Android (APK & AAB)
+- Bouwt voor Web
+- Bouwt voor Windows
+- Upload build artifacts
 
-## Contributing
+## Bijdragen
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Run tests and ensure code quality
-5. Submit a pull request
+1. Fork de repository
+2. Maak een feature branch
+3. Maak je wijzigingen
+4. Voer tests uit en zorg voor code kwaliteit
+5. Dien een pull request in
 
-## License
+## Licentie
 
-This project is private and not published to pub.dev.
+Dit project is privé en niet gepubliceerd naar pub.dev.
