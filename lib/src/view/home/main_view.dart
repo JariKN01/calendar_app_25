@@ -1,7 +1,7 @@
-import 'package:agenda_app/src/model/user.dart';
-import 'package:agenda_app/src/view/events/create_view.dart';
-import 'package:agenda_app/src/view/matches/create_view.dart';
-import 'package:agenda_app/src/widgets/navigation.dart';
+import 'package:calendar_app/src/model/user.dart';
+import 'package:calendar_app/src/view/events/create_view.dart';
+import 'package:calendar_app/src/view/matches/create_view.dart';
+import 'package:calendar_app/src/widgets/navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 

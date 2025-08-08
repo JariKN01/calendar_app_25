@@ -8,7 +8,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:agenda_app/main.dart';
+import 'package:calendar_app/main.dart';
 
 void main() {
   testWidgets('App should launch without crashing', (WidgetTester tester) async {

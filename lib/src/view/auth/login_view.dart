@@ -67,7 +67,7 @@ class LoginView extends StatelessWidget {
                               ),
                               SizedBox(height: 16),
                               Text(
-                                'Welkom bij de Agenda App',
+                                'Welkom bij de Calendar App',
                                 style: TextStyle(
                                   fontSize: 24,
                                   fontWeight: FontWeight.bold,

@@ -5,8 +5,8 @@ import 'package:mockito/mockito.dart';
 import 'package:mockito/annotations.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:agenda_app/src/controller/matches_controller.dart';
-import 'package:agenda_app/src/model/match.dart';
+import 'package:calendar_app/src/controller/matches_controller.dart';
+import 'package:calendar_app/src/model/match.dart';
 import 'dart:convert';
 
 // Generate mocks

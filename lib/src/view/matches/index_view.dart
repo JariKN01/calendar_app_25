@@ -1,8 +1,8 @@
-import 'package:agenda_app/src/controller/matches_controller.dart';
-import 'package:agenda_app/src/controller/teams_controller.dart';
-import 'package:agenda_app/src/model/team.dart';
-import 'package:agenda_app/src/view/matches/create_view.dart';
-import 'package:agenda_app/src/widgets/match_listview.dart';
+import 'package:calendar_app/src/controller/matches_controller.dart';
+import 'package:calendar_app/src/controller/teams_controller.dart';
+import 'package:calendar_app/src/model/team.dart';
+import 'package:calendar_app/src/view/matches/create_view.dart';
+import 'package:calendar_app/src/widgets/match_listview.dart';
 import 'package:flutter/material.dart';
 import 'package:multi_dropdown/multi_dropdown.dart';
 

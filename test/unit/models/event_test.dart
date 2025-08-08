@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:agenda_app/src/model/event.dart';
-import 'package:agenda_app/src/model/team.dart';
-import 'package:agenda_app/src/model/user.dart';
+import 'package:calendar_app/src/model/event.dart';
+import 'package:calendar_app/src/model/team.dart';
+import 'package:calendar_app/src/model/user.dart';
 
 void main() {
   group('Event Model Tests', () {

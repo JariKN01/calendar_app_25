@@ -1,4 +1,4 @@
-import 'package:agenda_app/src/model/team.dart';
+import 'package:calendar_app/src/model/team.dart';
 
 enum Status {pending, accepted, declined, canceled}
 

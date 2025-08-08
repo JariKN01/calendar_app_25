@@ -1,5 +1,5 @@
-import 'package:agenda_app/src/controller/auth_controller.dart';
-import 'package:agenda_app/src/controller/home_controller.dart';
+import 'package:calendar_app/src/controller/auth_controller.dart';
+import 'package:calendar_app/src/controller/home_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';

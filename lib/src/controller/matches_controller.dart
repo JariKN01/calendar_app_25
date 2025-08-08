@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:agenda_app/src/constants.dart';
-import 'package:agenda_app/src/model/match.dart';
-import 'package:agenda_app/src/model/user.dart';
+import 'package:calendar_app/src/constants.dart';
+import 'package:calendar_app/src/model/match.dart';
+import 'package:calendar_app/src/model/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;

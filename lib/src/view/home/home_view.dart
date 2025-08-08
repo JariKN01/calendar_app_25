@@ -1,7 +1,7 @@
-import 'package:agenda_app/src/model/user.dart';
-import 'package:agenda_app/src/view/events/create_view.dart';
-import 'package:agenda_app/src/widgets/event_listview.dart';
-import 'package:agenda_app/src/widgets/team_gridview.dart';
+import 'package:calendar_app/src/model/user.dart';
+import 'package:calendar_app/src/view/events/create_view.dart';
+import 'package:calendar_app/src/widgets/event_listview.dart';
+import 'package:calendar_app/src/widgets/team_gridview.dart';
 import 'package:flutter/material.dart';
 
 class Home extends StatelessWidget {

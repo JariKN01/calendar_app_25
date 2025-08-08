@@ -1,5 +1,5 @@
-import 'package:agenda_app/src/model/invite.dart';
-import 'package:agenda_app/src/model/team.dart';
+import 'package:calendar_app/src/model/invite.dart';
+import 'package:calendar_app/src/model/team.dart';
 class Event {
   final int id;
   final String title;

@@ -1,8 +1,8 @@
-import 'package:agenda_app/src/controller/teams_controller.dart';
-import 'package:agenda_app/src/model/team.dart';
-import 'package:agenda_app/src/model/user.dart';
-import 'package:agenda_app/src/view/partials.dart';
-import 'package:agenda_app/src/view/teams/partials.dart';
+import 'package:calendar_app/src/controller/teams_controller.dart';
+import 'package:calendar_app/src/model/team.dart';
+import 'package:calendar_app/src/model/user.dart';
+import 'package:calendar_app/src/view/partials.dart';
+import 'package:calendar_app/src/view/teams/partials.dart';
 import 'package:flutter/material.dart';
 
 class TeamUpdateView extends StatefulWidget {

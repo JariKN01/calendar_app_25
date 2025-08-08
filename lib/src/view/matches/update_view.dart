@@ -1,7 +1,7 @@
-import 'package:agenda_app/src/controller/matches_controller.dart';
-import 'package:agenda_app/src/controller/teams_controller.dart';
-import 'package:agenda_app/src/model/match.dart';
-import 'package:agenda_app/src/model/team.dart';
+import 'package:calendar_app/src/controller/matches_controller.dart';
+import 'package:calendar_app/src/controller/teams_controller.dart';
+import 'package:calendar_app/src/model/match.dart';
+import 'package:calendar_app/src/model/team.dart';
 import 'package:flutter/material.dart';
 
 class MatchUpdate extends StatefulWidget {

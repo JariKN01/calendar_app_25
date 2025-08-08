@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:agenda_app/src/model/invite.dart';
-import 'package:agenda_app/src/model/team.dart';
+import 'package:calendar_app/src/model/invite.dart';
+import 'package:calendar_app/src/model/team.dart';
 
 void main() {
   group('Invite Model Tests', () {

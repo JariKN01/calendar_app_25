@@ -1,10 +1,10 @@
-import 'package:agenda_app/src/controller/teams_controller.dart';
-import 'package:agenda_app/src/model/team.dart';
-import 'package:agenda_app/src/model/user.dart';
-import 'package:agenda_app/src/extensions/capitalize.dart';
-import 'package:agenda_app/src/view/events/create_view.dart';
-import 'package:agenda_app/src/view/partials.dart';
-import 'package:agenda_app/src/view/teams/update_view.dart';
+import 'package:calendar_app/src/controller/teams_controller.dart';
+import 'package:calendar_app/src/model/team.dart';
+import 'package:calendar_app/src/model/user.dart';
+import 'package:calendar_app/src/extensions/capitalize.dart';
+import 'package:calendar_app/src/view/events/create_view.dart';
+import 'package:calendar_app/src/view/partials.dart';
+import 'package:calendar_app/src/view/teams/update_view.dart';
 import 'package:flutter/material.dart';
 // import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 

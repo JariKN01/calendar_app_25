@@ -1,6 +1,6 @@
-import 'package:agenda_app/src/extensions/capitalize.dart';
-import 'package:agenda_app/src/model/user.dart';
-import 'package:agenda_app/src/view/home/main_view.dart';
+import 'package:calendar_app/src/extensions/capitalize.dart';
+import 'package:calendar_app/src/model/user.dart';
+import 'package:calendar_app/src/view/home/main_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';

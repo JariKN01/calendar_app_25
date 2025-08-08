@@ -1,8 +1,8 @@
-import 'package:agenda_app/src/view/events/index_view.dart';
-import 'package:agenda_app/src/view/home/home_view.dart';
-import 'package:agenda_app/src/view/matches/index_view.dart';
-import 'package:agenda_app/src/view/teams/index_view.dart';
-import 'package:agenda_app/src/model/user.dart';
+import 'package:calendar_app/src/view/events/index_view.dart';
+import 'package:calendar_app/src/view/home/home_view.dart';
+import 'package:calendar_app/src/view/matches/index_view.dart';
+import 'package:calendar_app/src/view/teams/index_view.dart';
+import 'package:calendar_app/src/model/user.dart';
 import 'package:flutter/material.dart';
 
 class TabBarController extends StatefulWidget {

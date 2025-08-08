@@ -1,10 +1,10 @@
 //Authentication, Register & Login
 import 'dart:convert';
 import 'dart:io';
-import 'package:agenda_app/src/constants.dart';
+import 'package:calendar_app/src/constants.dart';
 import 'package:http/http.dart' as http;
-import 'package:agenda_app/src/view/auth/login_view.dart';
-import 'package:agenda_app/src/view/auth/register_view.dart';
+import 'package:calendar_app/src/view/auth/login_view.dart';
+import 'package:calendar_app/src/view/auth/register_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';

@@ -1,7 +1,7 @@
-import 'package:agenda_app/src/controller/teams_controller.dart';
-import 'package:agenda_app/src/model/team.dart';
-import 'package:agenda_app/src/view/events/create_view.dart';
-import 'package:agenda_app/src/widgets/event_listview.dart';
+import 'package:calendar_app/src/controller/teams_controller.dart';
+import 'package:calendar_app/src/model/team.dart';
+import 'package:calendar_app/src/view/events/create_view.dart';
+import 'package:calendar_app/src/widgets/event_listview.dart';
 import 'package:flutter/material.dart';
 import 'package:multi_dropdown/multi_dropdown.dart';
 

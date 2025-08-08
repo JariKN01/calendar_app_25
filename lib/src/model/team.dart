@@ -1,4 +1,4 @@
-import 'package:agenda_app/src/model/user.dart';
+import 'package:calendar_app/src/model/user.dart';
 import 'package:flutter/material.dart';
 
 class Team {

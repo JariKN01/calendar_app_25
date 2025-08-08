@@ -1,9 +1,9 @@
 import 'dart:math';
-import 'package:agenda_app/src/controller/matches_controller.dart';
-import 'package:agenda_app/src/extensions/datetime.dart';
-import 'package:agenda_app/src/model/match.dart';
-import 'package:agenda_app/src/model/team.dart';
-import 'package:agenda_app/src/view/matches/read_view.dart';
+import 'package:calendar_app/src/controller/matches_controller.dart';
+import 'package:calendar_app/src/extensions/datetime.dart';
+import 'package:calendar_app/src/model/match.dart';
+import 'package:calendar_app/src/model/team.dart';
+import 'package:calendar_app/src/view/matches/read_view.dart';
 import 'package:flutter/material.dart';
 
 class MatchList extends StatefulWidget {

@@ -1,9 +1,9 @@
 import 'dart:math';
-import 'package:agenda_app/src/controller/events_controller.dart';
-import 'package:agenda_app/src/extensions/datetime.dart';
-import 'package:agenda_app/src/model/event.dart';
-import 'package:agenda_app/src/model/team.dart';
-import 'package:agenda_app/src/view/events/read_view.dart';
+import 'package:calendar_app/src/controller/events_controller.dart';
+import 'package:calendar_app/src/extensions/datetime.dart';
+import 'package:calendar_app/src/model/event.dart';
+import 'package:calendar_app/src/model/team.dart';
+import 'package:calendar_app/src/view/events/read_view.dart';
 import 'package:flutter/material.dart';
 
 class EventList extends StatefulWidget {

@@ -1,5 +1,5 @@
-import 'package:agenda_app/src/model/event.dart';
-import 'package:agenda_app/src/model/invite.dart';
+import 'package:calendar_app/src/model/event.dart';
+import 'package:calendar_app/src/model/invite.dart';
 
 class Match extends Event {
   final List<Invite> invites;
