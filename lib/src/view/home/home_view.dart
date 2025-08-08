@@ -291,30 +291,7 @@ class Home extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Dashboard',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        backgroundColor: colorScheme.primary,
-        foregroundColor: colorScheme.onPrimary,
-        elevation: 2,
-        actions: [
-          Padding(
-            padding: EdgeInsets.only(right: 16),
-            child: Center(
-              child: Text(
-                DateTime.now().day.toString().padLeft(2, '0') + '/' +
-                DateTime.now().month.toString().padLeft(2, '0'),
-                style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 16,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
+      // Remove AppBar to prevent duplicate bars - main_view.dart handles the top navigation
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(

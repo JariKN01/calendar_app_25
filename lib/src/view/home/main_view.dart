@@ -213,14 +213,14 @@ class HomeView extends StatelessWidget {
                 child: Row(
                   children: [
                     Icon(
-                      Icons.account_circle,
+                      Icons.calendar_month,
                       size: 36,
                       color: colorScheme.onPrimary,
                     ),
                     SizedBox(width: 12),
                     Expanded(
                       child: Text(
-                        bannerText,
+                        'Calendar_app',
                         style: TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.bold,
